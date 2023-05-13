@@ -1,4 +1,5 @@
 
+# General
 .PHONY:
 up:
 	docker-compose up -d
@@ -8,26 +9,29 @@ down:
 	docker-compose down
 
 .PHONY:
-clean:
-	docker-compose down && rm -rf mysql/data && git reset --hard
+clear-data:
+	rm -rf mysql/data
 
-.PHONY:
-reload:
-	docker-compose stop && docker-compose start
-
+# PHP
 .PHONY:
 shell:
-	docker exec -it irakli_apache bash
+	docker exec -it hercules_app bash
 
 
-# --------------- #
-#  Database dump  #
-# --------------- #
+# MySQL
+.PHONY:
+mysql-shell:
+	docker exec -it hercules_mysql bash
 
 .PHONY:
-mysql-dump:
-	docker exec -it irakli_mysql bash -c '/dump/generate.sh'
+mysql-console:
+	docker exec -it hercules_mysql bash -c 'mysql -u root -ptest'
+
+# Database
+.PHONY:
+db-dump:
+	docker exec -it hercules_mysql bash -c '/dump/generate.sh'
 
 .PHONY:
-mysql-restore:
-	docker exec -it irakli_mysql bash -c '/dump/populate.sh'
+db-restore:
+	docker exec -it hercules_mysql bash -c '/dump/populate.sh'

@@ -1,35 +1,36 @@
 <?php
 
-$host = 'mysql';
-$database = 'test_db';
-$username = 'test';
-$password = 'test';
+const MYSQL_HOST = 'mysql';
+const MYSQL_DATABASE = 'hercules_database';
+const MYSQL_USERNAME = 'test';
+const MYSQL_PASSWORD = 'test';
+
 
 /* Create a connection */
 try {
-    $dsn = "mysql:host=$host;dbname=$database;charset=utf8";
-    $pdo = new \PDO($dsn, $username, $password);
+    $dsn = 'mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8';
+    $pdo = new \PDO($dsn, MYSQL_USERNAME, MYSQL_PASSWORD);
     $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 } catch (\PDOException $e) {
     die($e->getMessage());
 }
 
 /* Create a table */
-$pdo->query("
-    CREATE TABLE IF NOT EXISTS `users` (
-      `id` int NOT NULL AUTO_INCREMENT,
-      `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-      `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-      `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-      `created_at` datetime NOT NULL,
-      PRIMARY KEY (`id`),
-      UNIQUE KEY `username` (`username`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-");
+//$pdo->query("
+//    CREATE TABLE IF NOT EXISTS `users` (
+//      `id` int NOT NULL AUTO_INCREMENT,
+//      `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+//      `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+//      `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+//      `created_at` datetime NOT NULL,
+//      PRIMARY KEY (`id`),
+//      UNIQUE KEY `username` (`username`)
+//    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+//");
 
 /* Insert an user */
 $rowsNumber = $pdo
-    ->query("SELECT COUNT(*) AS `rows_number` FROM `users`;")
+    ->query('SELECT COUNT(*) AS `rows_number` FROM `users`;')
     ->fetch(\PDO::FETCH_ASSOC)['rows_number'];
 
 if ($rowsNumber == 0) {
@@ -42,7 +43,7 @@ if ($rowsNumber == 0) {
 
 /* Get the user back */
 $user = $pdo
-    ->query("SELECT `username`, `email`, `created_at` FROM `users`;")
+    ->query('SELECT `username`, `email`, `created_at` FROM `users`;')
     ->fetch(\PDO::FETCH_ASSOC);
 
 

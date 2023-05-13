@@ -30,5 +30,5 @@ Thumbs.db
 *.wmv
 
 # MySQL data
-mysql/data/*
+mysql/live_data/*
 !/**/.gitkeep

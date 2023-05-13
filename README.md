@@ -2,16 +2,18 @@
 
 This is a basic Docker template with `Apache2` `PHP` `MySQL` and `phpMyAdmin` services.
 
+* [http://localhost:8080](http://localhost:8080) - Website
+* [http://localhost:8081](http://localhost:8081) - phpMyAdmin (test:test)
+
 
 ### 1. What the app does ###
 
-1. Creates a table
-2. Inserts an user
-3. Gets the user back
+1. Creates a collection
+2. Inserts 2 users
+3. Gets one user back
 4. Displays the user
 
 ```
-# Final results:
 Array
 (
     [username] => John Doe
@@ -32,22 +34,27 @@ Array
 
 * Clone the repository
 * Enter the project directory
-* Run `docker-compose up -d` or `make up`
-  (Make command may require installation).
+* Run `docker-compose up -d` or `make up` (Make command may require installation).
 
 
-* Website - [http://localhost:8080](http://localhost:8080)
-* phpMyAdmin - [http://localhost:8081](http://localhost:8081) (test:test)
-
-
-### Possible MySQL issues ###
+### 4. MySQL Troubleshooting ###
 ```
 # Connection refused error:
 SQLSTATE[HY000] [2002] Connection refused
 
 # Solution:
-docker exec -it irakli_mysql bash
-mysql -u root -p
-(Your mysql password, in this case it's "test")
+docker exec -it hercules_mysql bash
+
+# With the default password
+mysql -u root -ptest
 ALTER USER test IDENTIFIED WITH mysql_native_password BY 'test';
+
+# Update the root password
+mysqladmin -u root password newpassword
+mysql -u root -pnewpassword
+ALTER USER test IDENTIFIED WITH mysql_native_password BY 'test';
+
+docker exec -it hercules_mysql bash
+mysql -u root -ptest
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));
 ```

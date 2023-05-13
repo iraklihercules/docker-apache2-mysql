@@ -1,36 +1,47 @@
 version: "3.9"
 
 services:
-    apache:
-        build: "./app/"
-        container_name: irakli_apache
+    app:
+        build: ./app/
+        container_name: hercules_app
         ports:
-            - "8080:80"
+            - 8080:80
         volumes:
-            - "./app/src:/var/www/html/"
+            - ./app/src:/var/www/html/
         links:
             - mysql
+        depends_on:
+            mysql:
+                condition: service_healthy
     mysql:
         image: mysql:8.0
-        container_name: irakli_mysql
+        container_name: hercules_mysql
         environment:
             MYSQL_ROOT_PASSWORD: test
-            MYSQL_DATABASE: test_db
+            MYSQL_DATABASE: hercules_database
             MYSQL_USER: test
             MYSQL_PASSWORD: test
         ports:
-            - "3306:3306"
+            - 3306:3306
         volumes:
-            - "./mysql/data:/var/lib/mysql"
-            - "./mysql/dump:/dump"
+            - ./mysql/live_data:/var/lib/mysql
+            - ./mysql/dump:/dump
+            - ./mysql/entrypoint:/docker-entrypoint-initdb.d
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
+            start_period: 20s
     pma:
         image: phpmyadmin/phpmyadmin
-        container_name: irakli_pma
+        container_name: hercules_pma
         ports:
-            - "8081:80"
+            - 8081:80
         environment:
             PMA_HOST: mysql
         links:
             - mysql
         depends_on:
-            - mysql
+            mysql:
+                condition: service_healthy
